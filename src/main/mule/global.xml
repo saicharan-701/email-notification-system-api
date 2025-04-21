@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:email="http://www.mulesoft.org/schema/mule/email"
+	xmlns:api-gateway="http://www.mulesoft.org/schema/mule/api-gateway"
+	xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/api-gateway http://www.mulesoft.org/schema/mule/api-gateway/current/mule-api-gateway.xsd 
+http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/email http://www.mulesoft.org/schema/mule/email/current/mule-email.xsd">
+	<http:listener-config name="email-notification-system-api-httpListenerConfig">
+        <http:listener-connection host="0.0.0.0" port="8081" />
+    </http:listener-config>
+    <apikit:config name="email-notification-system-api-config" api="resource::71f3d33a-2aa4-4343-a6cb-f9af1fcee029:email-notification-system-api:1.0.0:raml:zip:email-notification-system-api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+    <api-gateway:autodiscovery apiId="123" ignoreBasePath="true" doc:name="API Autodiscovery" doc:id="493ca29d-1178-42c2-bb3e-8673fb3342e9" flowRef="email-notification-system-api-main" />
+	<global-property doc:name="Global Property" doc:id="88c9242e-a5b8-4050-901a-73aef4ff6cfd" name="mule.env" value="${mule.env}" />
+	<configuration-properties doc:name="Configuration properties" doc:id="38acb4b5-bf7c-4cda-be7f-8f056e9b9032" file="properties/${mule.env}-config.yaml" />
+	<configuration-properties doc:name="Configuration properties" doc:id="42d7bfe6-e95d-4efa-98ee-10ed9e5b2650" file="properties\common-config.yaml" />
+	<email:smtp-config name="Email_SMTP" doc:name="Email SMTP" doc:id="d3851b69-4fac-4437-8676-3c7e0179b466" >
+		<email:smtp-connection host="smtp.gmail.com" port="587" user="${smtp.email.user}" password="${smtp.email.password}" >
+			<email:properties >
+				<email:property key="mail.smtp.starttls.enable" value="true" />
+			</email:properties>
+		</email:smtp-connection>
+		<expiration-policy />
+	</email:smtp-config>
+</mule>

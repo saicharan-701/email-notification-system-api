@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:email="http://www.mulesoft.org/schema/mule/email" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/email http://www.mulesoft.org/schema/mule/email/current/mule-email.xsd">
+	<sub-flow name="post-send-emai-notification-sub-flow" doc:id="1e6803e4-7df9-4585-b659-d5b535744140" >
+		<logger level="INFO" doc:name="post-send-email-start" doc:id="1f9180cb-dbc5-47ba-8608-fa4bdd1fc41d" message="post-send-emai-notification-sub-flow started - #[correlationId]"/>
+		<email:send doc:id="c488b86e-ef86-4c4e-8e6d-c839b8760c91" config-ref="Email_SMTP" subject='#[payload.emailSubject default ""]'>
+			<reconnect />
+			<email:to-addresses >
+				<email:to-address value="#[payload.toAddress]" />
+			</email:to-addresses>
+			<email:body contentType="text/plain" >
+				<email:content ><![CDATA[#[output
+text/plain
+---
+payload.emailBody default ""]]]></email:content>
+			</email:body>
+		</email:send>
+		<ee:transform doc:name="response">
+            <ee:message>
+				<ee:set-payload resource="dwl/post-send-email-response.dwl" />
+            
+</ee:message>
+        </ee:transform>
+		<logger level="INFO" doc:name="post-send-email-start" doc:id="1005cd8b-83c3-4de3-b6a1-d124b3f7fe11" message="post-send-emai-notification-sub-flow completed - #[correlationId]"/>
+	</sub-flow>
+</mule>
