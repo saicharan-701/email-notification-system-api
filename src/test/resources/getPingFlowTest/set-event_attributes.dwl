@@ -1,0 +1,31 @@
+{
+  "headers": {
+    "x-correlation-id": "9885b106-d256-4f8d-ae98-f796a2b17c88",
+    "client_id": "390d9c4c-5803-4f2d-b534-cd41419581f7",
+    "client_secret": "5c12d13e-a14a-481c-bcff-9f2581957fda",
+    "content-type": "application/json",
+    "user-agent": "PostmanRuntime/7.43.3",
+    "accept": "*/*",
+    "postman-token": "1f37ced5-b9cd-47e5-9732-1d571a61ce7c",
+    "host": "0.0.0.0:8081",
+    "accept-encoding": "gzip, deflate, br",
+    "connection": "keep-alive",
+    "content-length": "189"
+  },
+  "clientCertificate": null,
+  "method": "GET",
+  "scheme": "https",
+  "queryParams": {},
+  "requestUri": "/api/v1/ping",
+  "queryString": "",
+  "version": "HTTP/1.1",
+  "maskedRequestPath": "/ping",
+  "listenerPath": "/api/v1/*",
+  "relativePath": "/v1/ping",
+  "localAddress": "/127.0.0.1:8081",
+  "uriParams": {},
+  "rawRequestUri": "/api/v1/ping",
+  "rawRequestPath": "/api/v1/ping",
+  "remoteAddress": "/127.0.0.1:65240",
+  "requestPath": "/api/v1/ping"
+}

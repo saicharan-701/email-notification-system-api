@@ -7,14 +7,14 @@
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/email http://www.mulesoft.org/schema/mule/email/current/mule-email.xsd">
 	<sub-flow name="post-send-emai-notification-sub-flow" doc:id="1e6803e4-7df9-4585-b659-d5b535744140" >
-		<logger level="INFO" doc:name="post-send-email-start" doc:id="1f9180cb-dbc5-47ba-8608-fa4bdd1fc41d" message="post-send-emai-notification-sub-flow started - #[correlationId]"/>
-		<email:send doc:id="c488b86e-ef86-4c4e-8e6d-c839b8760c91" config-ref="Email_SMTP" subject='#[payload.emailSubject default ""]'>
-			<reconnect />
-			<email:to-addresses >
+		<logger level="INFO" doc:name="post-send-email-start" doc:id="1f9180cb-dbc5-47ba-8608-fa4bdd1fc41d" message='#[{&#10;	"flow": "post-send-emai-notification-sub-flow",&#10;	"message": "Started",&#10;	"correlationId": correlationId&#10;}]'/>
+		<email:send doc:id="c488b86e-ef86-4c4e-8e6d-c839b8760c91" config-ref="Email_SMTP" subject='#[payload.emailSubject default ""]' doc:name="send-email">
+			<reconnect frequency="${email.reconnection.frequency}" count="${email.reconnection.attempts}"/>
+			<email:to-addresses>
 				<email:to-address value="#[payload.toAddress]" />
 			</email:to-addresses>
-			<email:body contentType="text/plain" >
-				<email:content ><![CDATA[#[output
+			<email:body contentType="text/plain">
+				<email:content><![CDATA[#[output
 text/plain
 ---
 payload.emailBody default ""]]]></email:content>
@@ -22,10 +22,9 @@ payload.emailBody default ""]]]></email:content>
 		</email:send>
 		<ee:transform doc:name="response">
             <ee:message>
-				<ee:set-payload resource="dwl/post-send-email-response.dwl" />
-            
+				<ee:set-payload resource="dwl/post-send-email-response.dwl" /> 
 </ee:message>
         </ee:transform>
-		<logger level="INFO" doc:name="post-send-email-start" doc:id="1005cd8b-83c3-4de3-b6a1-d124b3f7fe11" message="post-send-emai-notification-sub-flow completed - #[correlationId]"/>
+		<logger level="INFO" doc:name="post-send-email-start" doc:id="1005cd8b-83c3-4de3-b6a1-d124b3f7fe11" message='#[{&#10;	"flow": "post-send-emai-notification-sub-flow",&#10;	"message": "Completed",&#10;	"correlationId": correlationId&#10;}]'/>
 	</sub-flow>
 </mule>

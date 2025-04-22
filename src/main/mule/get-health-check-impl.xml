@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:email="http://www.mulesoft.org/schema/mule/email"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/email http://www.mulesoft.org/schema/mule/email/current/mule-email.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<sub-flow name="get-health-check-impl-sub-flow" doc:id="7265e05a-8c49-4784-b5bf-b24fe1a239a5" >
+		<logger level="INFO" doc:name="start-logger" doc:id="8c9245bd-8a6b-4d73-8572-937692e0088f" message='#[{&#10;	"flow": "get-health-check-impl-sub-flow",&#10;	"message": "Started",&#10;	"correlationId": correlationId&#10;}]'/>
+		<try doc:name="Try" doc:id="6568522e-d5cf-49af-b349-6c734cb7b9f6" >
+			<email:send doc:id="5b26c992-65ae-410e-9006-98cf05f06b3f" config-ref="Email_SMTP" subject="#[app.name ++ &quot; - &quot; ++ p('mule.env') ++ &quot; - &quot; ++ p('health.check.subject')]" doc:name="send-gmail">
+			<reconnect frequency="${email.reconnection.frequency}" count="${email.reconnection.attempts}"/>
+			<email:to-addresses>
+				<email:to-address value="#[p('health.check.toAddress')]" />
+			</email:to-addresses>
+			<email:headers ><![CDATA[#[output application/java
+---
+{
+	"x-correlation-id" : correlationId
+}]]]></email:headers>
+				<email:body contentType="text/plain">
+				<email:content><![CDATA[#[output
+text/plain
+---
+p('health.check.body') default ""]]]></email:content>
+			</email:body>
+		</email:send>
+			<ee:transform doc:name="health-check-success-response">
+            <ee:message>
+					<ee:set-payload resource="dwl/get-health-check-success-response.dwl" />
+            
+</ee:message>
+        </ee:transform>
+			<error-handler >
+				<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="95d85c0e-bd5c-4a95-a58d-0326575ca8a1" type="ANY">
+					<set-variable value="500" doc:name="http-status" doc:id="515df3d3-539d-4e3a-b400-b4a5faf53e7b" variableName="httpStatus"/>
+					<ee:transform doc:name="health-check-error-response" doc:id="caf34ee5-6e85-4c01-8701-114e7700261d" >
+						<ee:message >
+							<ee:set-payload resource="dwl/get-health-check-error-response.dwl" />
+						</ee:message>
+					</ee:transform>
+				</on-error-continue>
+			</error-handler>
+		</try>
+		<logger level="INFO" doc:name="end-logger" doc:id="65e6a530-db0b-408e-863d-3673999c4704" message='#[{&#10;	"flow": "get-health-check-impl-sub-flow",&#10;	"message": "Completed",&#10;	"correlationId": correlationId&#10;}]'/>
+	</sub-flow>
+</mule>

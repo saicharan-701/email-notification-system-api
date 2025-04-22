@@ -1,3 +1,32 @@
+muleVersion: "4.9.0"
+
 http:
-  host: "0.0.0.0"
+  listener:
+    host: "0.0.0.0"
+    port: "8081"
+    basePath: "/api/"
+    path: "v1/*"
+    readTimeout: "30000"
+    keystore:
+      path: "certs/listener-cert.jks"
+    connection:
+      idealTimeout: "40000"
+https:
   port: "8081"
+
+application:
+  name: "email-notification-sapi"
+
+health:
+  check:
+    subject: "Health Check Request"
+    body: "This is a health check request"
+    toAddress: "test@xyz.com"
+
+email:
+  reconnection:
+    frequency: "3000"
+    attempts: "5"
+    
+system:
+  errors: "HTTP:BAD_GATEWAY, HTTP:CONNECTIVITY, HTTP:FORBIDDEN, EMAIL:CONNECTIVITY, HTTP:TIMEOUT, HTTP:SERVICE_UNAVAILABLE"
